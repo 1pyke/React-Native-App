@@ -18,11 +18,16 @@
         "foregroundImage": "./assets/ZenHR-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.anonymous.zenhrApp"
+      "package": "com.liethzaitoun.zenhrApp"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.zenhrApp"
+      "bundleIdentifier": "com.liethzaitoun.zenhrApp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8aa70256-ce64-43dd-8452-9daddd8380d7"
+      }
     }
   }
 }

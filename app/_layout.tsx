@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 
 const StackLayout = () => {
   return (
-    <Stack screenOptions={{ statusBarColor: "#000" }}>
+    <Stack screenOptions={{ statusBarColor: "#000", headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen
         name="login"
@@ -20,3 +20,4 @@ export default StackLayout;
 // to navagite https://github.com/{owner}/{repo}
 
 // for seach https://api.github.com/search/repositories?q=test
+//https://expo.dev/accounts/liethzaitoun/projects/zenhrApp/builds/32d08962-1265-4f0d-8958-62e850182c3b

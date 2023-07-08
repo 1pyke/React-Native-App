@@ -30,7 +30,8 @@
     "expo-crypto": "12.4.1",
     "expo-web-browser": "12.3.2",
     "@expo/webpack-config": "18.0.1",
-    "expo-random": "13.2.0"
+    "expo-random": "13.2.0",
+    "expo-dev-client": "~2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
