@@ -13,13 +13,9 @@ import zenHrLogo from "../assets/ZenHR-Logo.jpg";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useRouter } from "expo-router";
+import { LoginProps } from "../types";
 
 WebBrowser.maybeCompleteAuthSession();
-
-export type LoginProps = {
-  emailType: string;
-  passwordType: string;
-};
 
 const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
   const router = useRouter();

@@ -1,24 +1,23 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-interface PersonState{
-    isLogedIn:boolean;
-}
+import { PersonState, ProfileProps } from "../../interfaces/Profile";
 
 const initalState:PersonState ={
     isLogedIn:false,
-
+    personData :[],
 }
 
 export const presonSlice= createSlice({
     name:'persons',
         initialState:initalState,
         reducers:{
-            logIn(state,action:PayloadAction<{isLogedIn:boolean}>){
-                state.isLogedIn = action.payload.isLogedIn
+            userData(state,action:PayloadAction<ProfileProps>){
+                state.personData.push(action.payload)
+    console.log(state.personData);
+
             }
         }
 })
 
 export default presonSlice.reducer
 
-export const {logIn} = presonSlice.actions
+export const {userData} = presonSlice.actions
