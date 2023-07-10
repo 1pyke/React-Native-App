@@ -12,7 +12,6 @@ export const presonSlice= createSlice({
         reducers:{
             userData(state,action:PayloadAction<ProfileProps>){
                 state.personData.push(action.payload)
-    console.log(state.personData);
 
             }
         }

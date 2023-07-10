@@ -30,7 +30,6 @@ const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
   });
 
   const handleGoogleLogin = async () => {
-    console.log("first");
     promptAsync();
   };
 
