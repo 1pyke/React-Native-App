@@ -63,12 +63,11 @@ const Info: React.FC = () => {
 
   if (hasGalleryPermission === false) {
     return (
-      <Text>
+      <Text style={styles.container}>
         You need to allow access to your camera and gallery to edit your profile
       </Text>
     );
   }
-
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>

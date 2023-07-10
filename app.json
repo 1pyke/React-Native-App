@@ -3,7 +3,6 @@
     "name": "zenhrApp",
     "slug": "zenhrApp",
     "version": "1.0.0",
-    "scheme": "acme",
     "icon": "./assets/ZenHR-Logo.jpg",
     "splash": {
       "image": "./assets/ZenHR-icon.png",
@@ -13,6 +12,7 @@
     "web": {
       "bundler": "metro"
     },
+    "scheme" :["zenhrApp","ZHR181063374780828"],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/ZenHR-icon.png",

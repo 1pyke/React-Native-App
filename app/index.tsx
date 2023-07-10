@@ -42,6 +42,7 @@ const Index: React.FC<IsLoginedIn> = ({ loggedin = false, Loading = true }) => {
             profileImage:
               "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg",
             phoneNumber: "",
+            location: {},
           })
         );
         setIsLoggedIn(false);

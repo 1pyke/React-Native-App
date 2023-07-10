@@ -8,55 +8,58 @@ import {
   TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Repository } from "../../interfaces/repository";
+import { openBrowserAsync } from "expo-web-browser";
+import axios from "axios";
+import { nanoid } from "@reduxjs/toolkit";
 
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [repository, setRepository] = useState<Repository[]>([]);
-  const [searchQuery, setSearchQuery] = useState("is:public");
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-
-  const getRepositories = async () => {
+  // set number of repositories in state to change it whenever you want to display
+  //  more repositories for the user
+  const [numberOfItems, setNumberOfItems] = useState(10);
+  const getNextRepos = async () => {
     try {
       setIsLoading(true);
       const result = await axios.get(
-        `https://api.github.com/search/repositories?q=${searchQuery}&page=${page}`
+        `https://api.github.com/search/repositories?q=${searchQuery}+language:assembly&page=${page}&per_page=${numberOfItems}`
       );
-      setRepository([...repository, ...result.data.items]);
+      setRepository((prevData) => [...prevData, ...result.data.items]);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
-    getRepositories();
+    getNextRepos();
   }, [page]);
   const handleLoadMore = () => {
-    setPage(page + 1);
-  };
-  const handelMoreDetails = () => {
-    console.log("test");
+    if (!isLoading) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
   const handleSearch = () => {
     setRepository([]);
     setPage(1);
     if (searchQuery.trim() === "") {
-      setSearchQuery("is:public");
+      setSearchQuery("");
     } else {
       setSearchQuery(searchQuery.trim());
     }
-    getRepositories();
+    getNextRepos();
   };
   const renderItem = ({ item }: { item: Repository }) => (
-    <View key={item.id} style={styles.card}>
+    <View style={styles.card}>
       <View style={styles.cardDetails}>
         <Text style={styles.title}>{item.name}</Text>
         <Text numberOfLines={2} style={styles.description}>
           {item?.description}
         </Text>
         <TouchableOpacity
-          onPress={() => handelMoreDetails()}
+          onPress={() => openBrowserAsync(item.html_url)}
           style={styles.repositoryButton}
         >
           <Text style={styles.repositoryButtonText}>See Repository</Text>
@@ -88,7 +91,7 @@ const Home: React.FC = () => {
       <FlatList
         data={repository}
         renderItem={renderItem}
-        keyExtractor={(item) => item.node_id + item.id}
+        keyExtractor={(item) => item.id.toString() + nanoid()}
         ListFooterComponent={renderLoader}
         onEndReachedThreshold={0.5}
         onEndReached={handleLoadMore}

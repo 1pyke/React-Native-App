@@ -4,4 +4,5 @@ export interface Repository {
     name: string;
     description?: string;
     node_id: string;
+    html_url: string;
   }
