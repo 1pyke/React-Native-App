@@ -8,35 +8,41 @@ import {
   TouchableOpacity,
   Image,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { ProfileProps } from "../../interfaces/Profile";
 import * as ImagePicker from "expo-image-picker";
-import { UploadImage } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GoogleMap from "../googleMap";
 
-const info: React.FC = () => {
-  const data: ProfileProps = useAppSelector(
-    (state) => state.person.personData[0]
-  );
+const Info: React.FC = () => {
+  const data: ProfileProps = useAppSelector((state) => state.person.personData);
   const [editable, setEditable] = useState(false);
-  const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
+  const [hasGalleryPermission, setHasGalleryPermission] = useState(false);
   const [updatedUsername, setUpdatedUsername] = useState(data.username);
   const [updatedImage, setUpdatedImage] = useState(data.profileImage ?? null);
   const [updatedPassword, setUpdatedPassword] = useState(data.password);
   const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState(
     data.phoneNumber
   );
-  const [updatedEmail, setUpdatedEmail] = useState(data.email);
+  const location = data.location;
+  const { latitude, longitude } = location?.coords || {};
+
   useEffect(() => {
-    handelImagePicker();
+    handleImagePicker();
   }, []);
+
   const handleEditProfile = () => {
     setEditable(true);
   };
-  const handelImagePicker = async () => {
+
+  const handleImagePicker = async () => {
     const galleryStatus = await ImagePicker.requestCameraPermissionsAsync();
-    setHasGalleryPermission(galleryStatus.status === "granted");
+    setHasGalleryPermission(
+      galleryStatus.status === ImagePicker.PermissionStatus.GRANTED
+    );
   };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -44,15 +50,17 @@ const info: React.FC = () => {
       aspect: [4, 3],
       quality: 1,
     });
-    if (!result.canceled) {
+    if (!result.cancelled) {
       AsyncStorage.setItem("profileImage", result.assets[0].uri);
       setUpdatedImage(result.assets[0].uri);
     }
   };
+
   const handleSaveProfile = async () => {
     // Perform save/update logic here
     setEditable(false);
   };
+
   if (hasGalleryPermission === false) {
     return (
       <Text>
@@ -60,6 +68,7 @@ const info: React.FC = () => {
       </Text>
     );
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>
@@ -106,24 +115,23 @@ const info: React.FC = () => {
           onChangeText={setUpdatedPhoneNumber}
           editable={editable}
         />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          value={updatedEmail}
-          onChangeText={setUpdatedEmail}
-          keyboardType="email-address"
-          editable={editable}
-        />
         <Text style={styles.label}>Location</Text>
-        <TextInput
-          style={styles.input}
-          value={data.location}
-          editable={false}
-        />
+        {location?.coords ? (
+          <GoogleMap latitude={latitude} longitude={longitude} />
+        ) : (
+          <View style={styles.loaderStyle}>
+            <ActivityIndicator
+              size="large"
+              color="#0000ff"
+              style={styles.loaderContainer}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -174,5 +182,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "#fff",
   },
+  loaderContainer: {
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderColor: "#CED0CE",
+  },
+  loaderStyle: {
+    marginVertical: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
-export default info;
+
+export default Info;

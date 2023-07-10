@@ -3,7 +3,7 @@ import { PersonState, ProfileProps } from "../../interfaces/Profile";
 
 const initalState:PersonState ={
     isLogedIn:false,
-    personData :[],
+    personData :{},
 }
 
 export const presonSlice= createSlice({
@@ -11,8 +11,8 @@ export const presonSlice= createSlice({
         initialState:initalState,
         reducers:{
             userData(state,action:PayloadAction<ProfileProps>){
-                state.personData.push(action.payload)
-
+                const prevState = state.personData
+                state.personData = {...prevState,...action.payload}
             }
         }
 })

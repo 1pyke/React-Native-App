@@ -14,10 +14,13 @@ import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useRouter } from "expo-router";
 import { LoginProps } from "../types";
+import { userData } from "../features/counter/counterSlice";
+import { useAppDispatch } from "./store";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [email, setEmail] = useState(emailType);
   const [password, setPassword] = useState(passwordType);
@@ -36,6 +39,7 @@ const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
   const handleLogin = () => {
     // Save credentials to AsyncStorage
     try {
+      dispatch(userData({ username: email, password: password }));
       AsyncStorage.setItem("username", email);
       AsyncStorage.setItem("password", password);
       router.push("/home");
