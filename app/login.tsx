@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -6,43 +6,92 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import zenHrLogo from "../assets/ZenHR-Logo.jpg";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
+import { useAppDispatch } from "./store";
 import { useRouter } from "expo-router";
 import { LoginProps } from "../types";
 import { userData } from "../features/counter/counterSlice";
-import { useAppDispatch } from "./store";
+import zenHrLogo from "../assets/ZenHR-Logo.jpg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import axios, { AxiosResponse } from "axios";
+import { Loginresponse } from "../interfaces/loginresponse";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
+const Login: React.FC<LoginProps> = ({
+  emailType,
+  passwordType,
+  userInfoType,
+}) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [email, setEmail] = useState(emailType);
   const [password, setPassword] = useState(passwordType);
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId:
-      "31973751438-ae5ckgeemp0735qdv61g5cepejmv8amh.apps.googleusercontent.com",
-    iosClientId:
-      "551106287277-nge0hk1r6rmto6co33gee01d0b7o2urq.apps.googleusercontent.com",
-    androidClientId: "",
-  });
+  const showInvalidCredentialsAlert = () => {
+    Alert.alert(
+      "Invalid Credentials",
+      "Please enter a valid email and password."
+    );
+  };
+  const [userInfo, setUserInfo] = useState(userInfoType); // after u get the user info from google
 
-  const handleGoogleLogin = async () => {
-    promptAsync();
+  // Google Sign in Here But Not Working Because of the redirect URL tried to give the useProxy true but still
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "31973751438-ohcb7mfappqtkgnvkvrbeq0tscgcl19e.apps.googleusercontent.com",
+    iosClientId:
+      "31973751438-4pqfdcsg7pkouoerpvfns2n9i1sg0r4u.apps.googleusercontent.com",
+    androidClientId:
+      "31973751438-dgte9bdv937dqdj4ijb8bd9j6p3f95aa.apps.googleusercontent.com", // got this key for SH-1 fingerpring form keystore JDK
+    redirectUri: "https://auth.expo.io/@liethzaitoun/zenhrApp",
+    ...{ useProxy: true },
+  });
+  useEffect(() => {
+    handleSignInWithGoogle();
+  }, [response]);
+  const handleSignInWithGoogle = async () => {
+    const user = await AsyncStorage.getItem("username");
+    if (!user) {
+      if (response?.type == "success" && response.authentication?.accessToken) {
+        await getUserInfo(response.authentication.accessToken);
+      }
+    } else {
+      setUserInfo(JSON.parse(user));
+    }
+  };
+  const getUserInfo = async (token: string) => {
+    if (!token) return;
+    try {
+      const response: AxiosResponse<Loginresponse> = await axios.get(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const user: Loginresponse = response.data;
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
+  // Sign in with Google logic ends here
   const handleLogin = () => {
     // Save credentials to AsyncStorage
     try {
       dispatch(userData({ username: email, password: password }));
       AsyncStorage.setItem("username", email);
       AsyncStorage.setItem("password", password);
-      router.push("/home");
+      if (email && password) {
+        router.push("/home");
+      } else {
+        showInvalidCredentialsAlert();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -53,7 +102,7 @@ const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
       <Image source={zenHrLogo} style={styles.logo} />
       <TextInput
         style={styles.input}
-        placeholder="Username or email"
+        placeholder="Username"
         placeholderTextColor="#999"
         value={email}
         onChangeText={setEmail}
@@ -71,7 +120,7 @@ const Login: React.FC<LoginProps> = ({ emailType, passwordType }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.googleLoginButton}
-        onPress={handleGoogleLogin}
+        onPress={() => promptAsync()}
       >
         <FontAwesome
           name="google"

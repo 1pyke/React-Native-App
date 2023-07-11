@@ -1,10 +1,10 @@
 import { Redirect } from "expo-router";
 import { LogBox, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAppDispatch } from "./store";
 import { userData } from "../features/counter/counterSlice";
 import { IsLoginedIn } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 
 LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
@@ -21,6 +21,7 @@ const Index: React.FC<IsLoginedIn> = ({ loggedin = false, Loading = true }) => {
       const profileImage = await AsyncStorage.getItem("profileImage");
       if (username !== null && password !== null) {
         dispatch(
+          // used this dummy data incase the login by google did notworked
           userData({
             username,
             password,
@@ -32,9 +33,10 @@ const Index: React.FC<IsLoginedIn> = ({ loggedin = false, Loading = true }) => {
             location: {},
           })
         );
-        setIsLoggedIn(true);
+        setIsLoggedIn(true); //  to redirect to home Screen
       } else {
         dispatch(
+          // add login data to the store
           userData({
             username: "",
             password: "",
@@ -69,7 +71,7 @@ const Index: React.FC<IsLoginedIn> = ({ loggedin = false, Loading = true }) => {
 
   // Wait for data retrieval before rendering the component
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#06b9b6" />;
   }
 
   return isLoggedIn ? (

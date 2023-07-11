@@ -8,7 +8,7 @@ export const store = configureStore({
   },
 });
 
-// hooks
+// hooks for redux type Script
 export const useAppDispatch: () => typeof store.dispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<
   ReturnType<typeof store.getState>

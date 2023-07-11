@@ -10,17 +10,16 @@ import {
 import React, { useEffect, useState } from "react";
 import { Repository } from "../../interfaces/repository";
 import { openBrowserAsync } from "expo-web-browser";
-import axios from "axios";
 import { nanoid } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [repository, setRepository] = useState<Repository[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  // set number of repositories in state to change it whenever you want to display
+  const [numberOfItems, setNumberOfItems] = useState(10); // set number of repositories in state to change it whenever you want to display
   //  more repositories for the user
-  const [numberOfItems, setNumberOfItems] = useState(10);
   const getNextRepos = async () => {
     try {
       setIsLoading(true);
@@ -58,7 +57,7 @@ const Home: React.FC = () => {
         <Text numberOfLines={2} style={styles.description}>
           {item?.description}
         </Text>
-        <TouchableOpacity
+        <TouchableOpacity // created a button cuz for me i beleive it's suits the style
           onPress={() => openBrowserAsync(item.html_url)}
           style={styles.repositoryButton}
         >
@@ -72,7 +71,7 @@ const Home: React.FC = () => {
       <View style={styles.loaderStyle}>
         <ActivityIndicator
           size="large"
-          color="#0000ff"
+          color="#06b9b6"
           style={styles.loaderContainer}
         />
       </View>
@@ -108,7 +107,8 @@ const styles = StyleSheet.create({
   searchInput: {
     backgroundColor: "#f0f2f5",
     padding: 10,
-    marginBottom: 10,
+    marginTop: 20,
+    marginBottom: 20,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#ccc",

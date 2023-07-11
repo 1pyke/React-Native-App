@@ -12,6 +12,7 @@ const StackLayout = () => {
           color: "#06b9b6",
           fontSize: 24,
         },
+        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen name="(tabs)" />
@@ -23,13 +24,3 @@ const StackLayout = () => {
   );
 };
 export default StackLayout;
-
-// for spesfic user// https://api.github.com/users/username/repos
-
-// for public repo // https://api.github.com/repositories
-
-// to navagite https://github.com/{owner}/{repo}
-
-// for seach https://api.github.com/search/repositories?q=test
-
-//https://expo.dev/accounts/liethzaitoun/projects/zenhrApp/builds/32d08962-1265-4f0d-8958-62e850182c3b

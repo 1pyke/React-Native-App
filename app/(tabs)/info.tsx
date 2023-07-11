@@ -113,6 +113,7 @@ const Info: React.FC = () => {
           value={updatedPhoneNumber}
           onChangeText={setUpdatedPhoneNumber}
           editable={editable}
+          keyboardType="phone-pad"
         />
         <Text style={styles.label}>Location</Text>
         {location?.coords ? (
@@ -121,7 +122,7 @@ const Info: React.FC = () => {
           <View style={styles.loaderStyle}>
             <ActivityIndicator
               size="large"
-              color="#0000ff"
+              color="#06b9b6"
               style={styles.loaderContainer}
             />
           </View>

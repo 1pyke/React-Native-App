@@ -1,12 +1,10 @@
-import * as Location from "expo-location";
 export interface ProfileProps {
     username: string;
     password: string;
     email?: string;
     profileImage?: any;
     phoneNumber?: string;
-    location?:{}
-    ;
+    location?:{};
   }
   export interface PersonState{
     isLogedIn:boolean;
